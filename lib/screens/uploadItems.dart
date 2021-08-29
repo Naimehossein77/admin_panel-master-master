@@ -559,7 +559,8 @@ class _UploadPageState extends State<UploadPage>
           'gif',
         ]);
     if (result != null) {
-      file = result.paths.map((e) => File(e)).toList();
+      if (file == null) file = [];
+      file += result.paths.map((e) => File(e)).toList();
       setState(() {});
     }
   }
@@ -720,7 +721,7 @@ class _UploadPageState extends State<UploadPage>
       setState(() {
         uploading = false;
       });
-      // Navigator.pop(context);
+      Navigator.pop(context);
     }).catchError((error) => print("Failed to update user: $error"));
   }
 }

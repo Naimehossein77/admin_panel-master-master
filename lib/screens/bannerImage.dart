@@ -162,9 +162,10 @@ class _BannerImageState extends State<BannerImage> {
                   if (result == null) {
                     setState(() {
                       isLoading = false;
-                      return;
                     });
+                    return;
                   }
+
                   File file = File(result.files.single.path);
 
                   var downloadUrl = await uploadImages(file);
@@ -205,9 +206,12 @@ class _BannerImageState extends State<BannerImage> {
                               color: Colors.white,
                               child: Stack(
                                 children: [
-                                  Image.network(
-                                    thumbnailUrl[index],
-                                    fit: BoxFit.fill,
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Image.network(
+                                      thumbnailUrl[index],
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                   Positioned(
                                       top: 50,

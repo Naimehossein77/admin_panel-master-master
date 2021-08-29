@@ -46,47 +46,51 @@ class _ProductsPageState extends State<ProductsPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: new BoxDecoration(
-            gradient: new LinearGradient(
-              colors: [
-                Colors.blue.withOpacity(.1),
-                Colors.pink.withOpacity(.1)
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              // stops: [0.0, 1.0],
-              // tileMode: TileMode.clamp,
+      body: ListView(
+        children: [
+          Container(
+            padding: EdgeInsets.only(bottom: 50),
+            decoration: new BoxDecoration(
+              gradient: new LinearGradient(
+                colors: [
+                  Colors.blue.withOpacity(.1),
+                  Colors.pink.withOpacity(.1)
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                // stops: [0.0, 1.0],
+                // tileMode: TileMode.clamp,
+              ),
+            ),
+            width: MediaQuery.of(context).size.width,
+            // height: MediaQuery.of(context).size.height,
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection("products").snapshots(),
+              builder: (context, dataSnapshot) {
+                return dataSnapshot == null || !dataSnapshot.hasData
+                    ? Center(
+                        child: CircularProgressIndicator(
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(Colors.teal),
+                      ))
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          ItemModel model = ItemModel.fromJson(
+                              dataSnapshot.data.docs[index].data());
+
+                          return ProductCard(
+                            model: model,
+                          );
+                        },
+                        itemCount: dataSnapshot.data.docs.length,
+                      );
+              },
             ),
           ),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: StreamBuilder<QuerySnapshot>(
-            stream:
-                FirebaseFirestore.instance.collection("products").snapshots(),
-            builder: (context, dataSnapshot) {
-              return dataSnapshot == null || !dataSnapshot.hasData
-                  ? Center(
-                      child: CircularProgressIndicator(
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Colors.teal),
-                    ))
-                  : ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        ItemModel model = ItemModel.fromJson(
-                            dataSnapshot.data.docs[index].data());
-
-                        return ProductCard(
-                          model: model,
-                        );
-                      },
-                      itemCount: dataSnapshot.data.docs.length,
-                    );
-            },
-          ),
-        ),
+        ],
       ),
     );
   }

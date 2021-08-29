@@ -25,16 +25,19 @@ class _AdminSignInScreenState extends State<AdminSignInScreen> {
       TextEditingController();
 
   loginAdmin() async {
+    log('cam here');
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(
             email: _adminIDTextEditingController.text.trim(),
             password: _passwordTextEditingController.text.trim())
         .then((value) {
+      log('here in value');
       FirebaseFirestore.instance
           .collection("admin")
           .doc(FirebaseAuth.instance.currentUser.uid)
           .get()
           .then((snapshot) {
+        log(snapshot.toString());
         if (snapshot != null) if (snapshot.data()["id"] !=
             FirebaseAuth.instance.currentUser.uid) {
           print("id incorrect");
